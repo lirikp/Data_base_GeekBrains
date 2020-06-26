@@ -1,0 +1,197 @@
+Практическое задание по теме “CRUD - операции”
+
+2.Подобрать сервис который будет служить основой для вашей курсовой работы.
+
+
+Сервис подобран, на основе DJANGO будет организован электронный журнал для студентов учебного заведения который со следующего учебного года уже пойдёт в бой. 
+Так же в дальнейшем будет организована система для поступления в учебное заведение.
+
+
+Таблицы для электронного журнала уже сделаны, они перечислены ниже:
+
+-- ----------------------------
+-- Table structure for journal_departament
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_departament`;
+CREATE TABLE `journal_departament`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `nameDep` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `nameDep`(`nameDep`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_discipline
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_discipline`;
+CREATE TABLE `journal_discipline`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `nameDiscipline` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `dateStart` date NOT NULL,
+  `dateFinish` date NOT NULL,
+  `dayofWeekStartLecture` int(0) NOT NULL,
+  `timeStartLecture` time(6) NOT NULL,
+  `timeFinishLecture` time(6) NOT NULL,
+  `descriptionDiscipline` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `itemIdToDiscip_id` int(0) NOT NULL,
+  `teachIdToDiscip_id` int(0) NOT NULL,
+  `literatura` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `сontrol_requirements` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `journal_discipline_itemIdToDiscip_id_a8cd6e87_fk_journal_item_id`(`itemIdToDiscip_id`) USING BTREE,
+  INDEX `journal_discipline_teachIdToDiscip_id_e686f9ad_fk_journal_t`(`teachIdToDiscip_id`) USING BTREE,
+  CONSTRAINT `journal_discipline_itemIdToDiscip_id_a8cd6e87_fk_journal_item_id` FOREIGN KEY (`itemIdToDiscip_id`) REFERENCES `journal_item` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_discipline_teachIdToDiscip_id_e686f9ad_fk_journal_t` FOREIGN KEY (`teachIdToDiscip_id`) REFERENCES `journal_teacher` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_item
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_item`;
+CREATE TABLE `journal_item`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `itemName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `fullInfo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 119 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_listofstudfordiscipline
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_listofstudfordiscipline`;
+CREATE TABLE `journal_listofstudfordiscipline`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `discipListId_id` int(0) NOT NULL,
+  `studId_id` int(0) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `journal_listofstudfo_discipListId_id_b063bb2b_fk_journal_d`(`discipListId_id`) USING BTREE,
+  INDEX `journal_listofstudfo_studId_id_c07b003a_fk_journal_s`(`studId_id`) USING BTREE,
+  CONSTRAINT `journal_listofstudfo_discipListId_id_b063bb2b_fk_journal_d` FOREIGN KEY (`discipListId_id`) REFERENCES `journal_discipline` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_listofstudfo_studId_id_c07b003a_fk_journal_s` FOREIGN KEY (`studId_id`) REFERENCES `journal_student` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_material
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_material`;
+CREATE TABLE `journal_material`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `dateInit` date NOT NULL,
+  `countHour` int(0) NOT NULL,
+  `isCount` tinyint(1) NOT NULL,
+  `topic` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `homework` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `discipMaterialId_id` int(0) NOT NULL,
+  `meetId_id` int(0) NOT NULL,
+  `teachIdToMaterial_id` int(0) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `journal_material_discipMaterialId_id_fdfc4931_fk_journal_d`(`discipMaterialId_id`) USING BTREE,
+  INDEX `journal_material_meetId_id_c47e8d37_fk_journal_typeofmeet_id`(`meetId_id`) USING BTREE,
+  INDEX `journal_material_teachIdToMaterial_id_ecd8dfc8_fk_journal_t`(`teachIdToMaterial_id`) USING BTREE,
+  CONSTRAINT `journal_material_discipMaterialId_id_fdfc4931_fk_journal_d` FOREIGN KEY (`discipMaterialId_id`) REFERENCES `journal_discipline` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_material_meetId_id_c47e8d37_fk_journal_typeofmeet_id` FOREIGN KEY (`meetId_id`) REFERENCES `journal_typeofmeet` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_material_teachIdToMaterial_id_ecd8dfc8_fk_journal_t` FOREIGN KEY (`teachIdToMaterial_id`) REFERENCES `journal_teacher` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_position
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_position`;
+CREATE TABLE `journal_position`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `positionName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_score
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_score`;
+CREATE TABLE `journal_score`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `dateIn` datetime(6) NOT NULL,
+  `result` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `countEdit` int(0) NOT NULL,
+  `editOnScore` tinyint(1) NOT NULL,
+  `descriptionScore` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `disciplineId_id` int(0) NOT NULL,
+  `materialId_id` int(0) NOT NULL,
+  `studentId_id` int(0) NOT NULL,
+  `teachIdToScore_id` int(0) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq-score`(`disciplineId_id`, `materialId_id`, `studentId_id`, `teachIdToScore_id`) USING BTREE,
+  INDEX `journal_score_materialId_id_8e914476_fk_journal_material_id`(`materialId_id`) USING BTREE,
+  INDEX `journal_score_studentId_id_51507092_fk_journal_student_id`(`studentId_id`) USING BTREE,
+  INDEX `journal_score_teachIdToScore_id_b968e176_fk_journal_teacher_id`(`teachIdToScore_id`) USING BTREE,
+  CONSTRAINT `journal_score_disciplineId_id_95997893_fk_journal_discipline_id` FOREIGN KEY (`disciplineId_id`) REFERENCES `journal_discipline` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_score_materialId_id_8e914476_fk_journal_material_id` FOREIGN KEY (`materialId_id`) REFERENCES `journal_material` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_score_studentId_id_51507092_fk_journal_student_id` FOREIGN KEY (`studentId_id`) REFERENCES `journal_student` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_score_teachIdToScore_id_b968e176_fk_journal_teacher_id` FOREIGN KEY (`teachIdToScore_id`) REFERENCES `journal_teacher` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_student
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_student`;
+CREATE TABLE `journal_student`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `lastName` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `partonymic` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dateStartStudy` date NOT NULL,
+  `dateFinishStudy` date NOT NULL,
+  `course` int(0) NOT NULL,
+  `isOn` tinyint(1) NOT NULL,
+  `paid` tinyint(1) NOT NULL,
+  `foreignStudent` tinyint(1) NOT NULL,
+  `tel` varchar(17) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `birth_date` date NULL DEFAULT NULL,
+  `descriptionStudent` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `depStudId_id` int(0) NOT NULL,
+  `userStudId_id` int(0) NULL DEFAULT NULL,
+  `transfer` tinyint(1) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `journal_student_depStudId_id_96d3888d_fk_journal_departament_id`(`depStudId_id`) USING BTREE,
+  INDEX `journal_student_userStudId_id_2f5af13e_fk_auth_user_id`(`userStudId_id`) USING BTREE,
+  CONSTRAINT `journal_student_depStudId_id_96d3888d_fk_journal_departament_id` FOREIGN KEY (`depStudId_id`) REFERENCES `journal_departament` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_student_userStudId_id_2f5af13e_fk_auth_user_id` FOREIGN KEY (`userStudId_id`) REFERENCES `auth_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_teacher
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_teacher`;
+CREATE TABLE `journal_teacher`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `lastName` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `partonymic` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dateStartTeach` date NULL DEFAULT NULL,
+  `dateFinishTeach` date NULL DEFAULT NULL,
+  `substitution` int(0) NULL DEFAULT NULL,
+  `tel` varchar(17) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `birth_date` date NULL DEFAULT NULL,
+  `descriptionTeachert` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `depTeachId_id` int(0) NOT NULL,
+  `positionId_id` int(0) NOT NULL,
+  `userTechId_id` int(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `journal_teacher_depTeachId_id_8ac7602d_fk_journal_departament_id`(`depTeachId_id`) USING BTREE,
+  INDEX `journal_teacher_positionId_id_a83b73b1_fk_journal_position_id`(`positionId_id`) USING BTREE,
+  INDEX `journal_teacher_userTechId_id_47f777c1_fk_auth_user_id`(`userTechId_id`) USING BTREE,
+  CONSTRAINT `journal_teacher_positionId_id_a83b73b1_fk_journal_position_id` FOREIGN KEY (`positionId_id`) REFERENCES `journal_position` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `journal_teacher_userTechId_id_47f777c1_fk_auth_user_id` FOREIGN KEY (`userTechId_id`) REFERENCES `auth_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for journal_typeofmeet
+-- ----------------------------
+DROP TABLE IF EXISTS `journal_typeofmeet`;
+CREATE TABLE `journal_typeofmeet`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `meetName` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `verboseName` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

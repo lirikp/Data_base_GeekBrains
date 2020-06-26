@@ -1,0 +1,646 @@
+Практическое задание по теме “CRUD - операции”
+
+1.Повторить все действия по доработке БД vk.
+
+
+
+mysql> DROP DATABASE vk;
+CREATE DATABASE vk;
+Query OK, 9 rows affected (0.20 sec)
+
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM users LIMIT 10;
+1046 - No database selected
+mysql> гыу млж
+    -> ;
+1064 - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'гыу млж' at line 1
+mysql> use vk;
+Database changed
+mysql> SELECT * FROM users LIMIT 10;
++----+------------+-----------+------------------------------+----------------------+---------------------+---------------------+
+| id | first_name | last_name | email                        | phone                | created_at          | updated_at          |
++----+------------+-----------+------------------------------+----------------------+---------------------+---------------------+
+|  1 | Ewell      | Heaney    | rogahn.violette@example.com  | 844-006-1994x0006    | 1971-01-03 00:23:08 | 2002-09-11 03:21:05 |
+|  2 | Shaniya    | Farrell   | grant.krystal@example.com    | +73(5)8958760771     | 1978-08-05 08:29:37 | 1976-01-12 10:09:19 |
+|  3 | Blanca     | Kuvalis   | pwilliamson@example.net      | (679)030-4842        | 2017-08-25 15:09:13 | 1986-01-02 02:16:08 |
+|  4 | Willie     | Nolan     | sibyl78@example.com          | (535)272-6714x043    | 1981-03-27 11:03:55 | 2020-04-28 11:39:23 |
+|  5 | Susana     | Goyette   | lubowitz.winston@example.com | 922-816-4548         | 1999-10-01 16:17:10 | 1983-01-02 13:57:47 |
+|  6 | Giles      | Reinger   | adonis21@example.org         | (503)274-1733x27679  | 2019-09-18 04:18:25 | 1973-05-13 10:00:40 |
+|  7 | Royce      | Rowe      | laurence04@example.org       | (783)374-5236x292    | 2006-09-04 16:24:13 | 1978-07-14 18:40:34 |
+|  8 | Samanta    | Abshire   | marco.barton@example.net     | 625.467.7245x81091   | 1975-08-08 16:52:06 | 1978-01-19 12:55:45 |
+|  9 | Elody      | Deckow    | melyssa18@example.org        | 1-796-446-5668x44825 | 1991-05-01 01:06:29 | 1986-05-11 22:41:29 |
+| 10 | Nikko      | Kub       | eliezer.beier@example.net    | 01343486417          | 1980-08-23 03:01:00 | 1979-12-31 06:55:28 |
++----+------------+-----------+------------------------------+----------------------+---------------------+---------------------+
+10 rows in set (0.06 sec)
+
+mysql> DESC users;
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field      | Type         | Null | Key | Default           | Extra                                         |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| id         | int unsigned | NO   | PRI | NULL              | auto_increment                                |
+| first_name | varchar(100) | NO   |     | NULL              |                                               |
+| last_name  | varchar(100) | NO   |     | NULL              |                                               |
+| email      | varchar(100) | NO   | UNI | NULL              |                                               |
+| phone      | varchar(100) | NO   | UNI | NULL              |                                               |
+| created_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+7 rows in set (0.06 sec)
+
+mysql> UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE created_at > updated_at;
+Query OK, 49 rows affected (0.02 sec)
+Rows matched: 49  Changed: 49  Warnings: 0
+mysql> DESC profiles;
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field      | Type         | Null | Key | Default           | Extra                                         |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| user_id    | int unsigned | NO   | PRI | NULL              |                                               |
+| gender     | char(1)      | NO   |     | NULL              |                                               |
+| birthday   | date         | YES  |     | NULL              |                                               |
+| photo_id   | int unsigned | YES  |     | NULL              |                                               |
+| city       | varchar(130) | YES  |     | NULL              |                                               |
+| country    | varchar(130) | YES  |     | NULL              |                                               |
+| created_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+8 rows in set (0.08 sec)
+
+mysql> SELECT * FROM profiles LIMIT 10;
++---------+--------+------------+----------+-------------------+---------+---------------------+---------------------+
+| user_id | gender | birthday   | photo_id | city              | country | created_at          | updated_at          |
++---------+--------+------------+----------+-------------------+---------+---------------------+---------------------+
+|       1 | w      | 2016-02-17 |       22 | Stephonland       | 5113867 | 2015-02-06 15:15:48 | 1978-12-19 06:34:13 |
+|       2 | m      | 1994-06-23 |       36 | East Weldonview   | 167     | 1972-10-25 05:39:55 | 2007-01-21 03:12:11 |
+|       3 | w      | 1987-03-12 |       68 | Lioneltown        | 62      | 2012-07-25 18:57:22 | 1976-04-27 12:14:15 |
+|       4 | w      | 1980-05-19 |       58 | Darleneburgh      | 2636    | 1985-06-01 23:18:32 | 2011-12-03 12:43:09 |
+|       5 | m      | 2003-12-15 |        5 | Gracielachester   |         | 1985-01-21 13:28:00 | 1997-10-30 17:50:01 |
+|       6 | m      | 1970-05-23 |       87 | Joyshire          | 116     | 2012-04-25 16:41:46 | 1998-07-28 10:48:50 |
+|       7 | m      | 1989-09-26 |       36 | North Luthershire | 1031    | 2006-02-12 01:32:23 | 2007-04-06 18:45:23 |
+|       8 | w      | 2016-03-03 |       17 | Port Destinee     | 1047    | 2003-09-05 05:30:23 | 1983-03-05 00:13:50 |
+|       9 | m      | 1999-09-22 |       28 | West Faustino     | 9417448 | 2004-04-10 02:14:50 | 1974-09-12 16:41:46 |
+|      10 | w      | 2001-02-15 |       68 | East Lambert      | 5377    | 1998-07-04 18:41:56 | 2008-04-08 04:40:23 |
++---------+--------+------------+----------+-------------------+---------+---------------------+---------------------+
+10 rows in set (0.08 sec)
+
+mysql> UPDATE profiles SET photo_id = FLOOR(1 + RAND() * 100);
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+
+mysql> CREATE TEMPORARY TABLE genders (name CHAR(1));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> INSERT INTO genders VALUES ('m'), ('f'); 
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM genders;
++------+
+| name |
++------+
+| m    |
+| f    |
++------+
+2 rows in set (0.07 sec)
+
+mysql> UPDATE profiles SET gender = (SELECT name FROM genders ORDER BY RAND() LIMIT 1);
+Query OK, 72 rows affected (0.01 sec)
+Rows matched: 100  Changed: 72  Warnings: 0
+
+mysql> UPDATE profiles 
+  SET gender = (SELECT name FROM genders ORDER BY RAND() LIMIT 1);
+Query OK, 52 rows affected (0.02 sec)
+Rows matched: 100  Changed: 52  Warnings: 0
+
+mysql> CREATE TEMPORARY TABLE countries (name VARCHAR(150));
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO countries VALUES ('Russian Federation'), ('Germany'), ('Belarus');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM countries;
++--------------------+
+| name               |
++--------------------+
+| Russian Federation |
+| Germany            |
+| Belarus            |
++--------------------+
+3 rows in set (0.06 sec)
+
+mysql> UPDATE profiles 
+  SET country = (SELECT name FROM countries ORDER BY RAND() LIMIT 1);
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+
+mysql> SHOW TABLES;
++---------------------+
+| Tables_in_vk        |
++---------------------+
+| communities         |
+| communities_users   |
+| friendship          |
+| friendship_statuses |
+| media               |
+| media_types         |
+| messages            |
+| profiles            |
+| users               |
++---------------------+
+9 rows in set (0.06 sec)
+
+mysql> DESC messages;
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field        | Type         | Null | Key | Default           | Extra                                         |
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| id           | int unsigned | NO   | PRI | NULL              | auto_increment                                |
+| from_user_id | int unsigned | NO   |     | NULL              |                                               |
+| to_user_id   | int unsigned | NO   |     | NULL              |                                               |
+| body         | text         | NO   |     | NULL              |                                               |
+| is_important | tinyint(1)   | YES  |     | NULL              |                                               |
+| is_delivered | tinyint(1)   | YES  |     | NULL              |                                               |
+| created_at   | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at   | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+8 rows in set (0.07 sec)
+
+mysql> SELECT * FROM messages LIMIT 10;
++----+--------------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+--------------+---------------------+---------------------+
+| id | from_user_id | to_user_id | body                                                                                                                                                                                                                           | is_important | is_delivered | created_at          | updated_at          |
++----+--------------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+--------------+---------------------+---------------------+
+|  1 |            1 |          1 | Et laborum debitis qui iste vitae qui accusantium. Occaecati voluptatem aliquid et repellat quis. Rerum quia neque est harum consequatur sint iusto.                                                                           |            1 |            1 | 2009-05-06 03:03:08 | 1985-09-18 16:11:44 |
+|  2 |            2 |          2 | Nihil laboriosam ab ut facilis. Quam nulla hic omnis quam sed similique. Nostrum consectetur et repellat placeat nulla in qui cumque. Aut commodi adipisci nesciunt.                                                           |            1 |            0 | 1971-01-24 11:54:37 | 2004-11-01 18:50:55 |
+|  3 |            3 |          3 | Est recusandae cupiditate fugit laborum. Quidem praesentium earum libero. Enim atque totam sit quia.                                                                                                                           |            1 |            0 | 2008-03-16 03:01:05 | 2013-01-19 05:08:28 |
+|  4 |            4 |          4 | Quis enim error quidem. Quo non architecto aut vel ratione. Aut fugiat commodi et adipisci. Est unde aperiam voluptatum molestias tempora quas neque. Quaerat natus et iste dolores est tempore nisi.                          |            0 |            1 | 1995-06-13 14:41:40 | 2006-11-30 14:01:39 |
+|  5 |            5 |          5 | Velit voluptatem omnis dolorem ratione iure officia pariatur. In asperiores in quidem eveniet magnam magni non.                                                                                                                |            1 |            0 | 1975-03-26 05:03:56 | 2005-05-05 15:48:50 |
+|  6 |            6 |          6 | Quia aperiam aut repellendus iure eum sapiente. Deserunt voluptatem vel harum maiores fugit mollitia. Rerum officiis quae rerum voluptatibus facilis alias. Rerum ut quo a eos.                                                |            1 |            0 | 2018-02-12 16:01:15 | 2010-04-04 02:42:39 |
+|  7 |            7 |          7 | Repellat quam ut possimus eos vel eos. Dolor labore qui quos expedita enim quos. Officiis deserunt quia cum eius. Enim molestias ut nihil quibusdam cupiditate et earum. Ut odit aspernatur nostrum numquam est facilis ullam. |            0 |            1 | 1994-09-18 10:27:50 | 1994-01-08 17:05:43 |
+|  8 |            8 |          8 | Doloremque quis debitis est explicabo sit magnam cumque. Neque non labore aut. Ut architecto eos autem voluptate unde in. Est doloribus ipsam vel omnis beatae repudiandae magnam.                                             |            1 |            0 | 2002-01-12 05:30:23 | 1978-07-29 18:49:56 |
+|  9 |            9 |          9 | Veritatis itaque mollitia asperiores. Aut voluptatem autem magni voluptates laboriosam fugiat. Est omnis pariatur pariatur corporis quo.                                                                                       |            1 |            1 | 1996-11-26 01:07:15 | 1986-10-02 22:31:48 |
+| 10 |           10 |         10 | Dolor beatae quas nisi sed facilis. Minima et vel explicabo quos neque accusantium.                                                                                                                                            |            0 |            1 | 1982-05-01 04:57:25 | 1981-12-07 17:19:08 |
++----+--------------+------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+--------------+---------------------+---------------------+
+10 rows in set (0.09 sec)
+
+mysql> UPDATE messages SET 
+  from_user_id = FLOOR(1 + RAND() * 100),
+  to_user_id = FLOOR(1 + RAND() * 100);
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+mysql> DESC media;
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field         | Type         | Null | Key | Default           | Extra                                         |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| id            | int unsigned | NO   | PRI | NULL              | auto_increment                                |
+| user_id       | int unsigned | NO   |     | NULL              |                                               |
+| filename      | varchar(255) | NO   |     | NULL              |                                               |
+| size          | int          | NO   |     | NULL              |                                               |
+| metadata      | longtext     | YES  |     | NULL              |                                               |
+| media_type_id | int unsigned | NO   |     | NULL              |                                               |
+| created_at    | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at    | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+8 rows in set (0.08 sec)
+
+mysql> SELECT * FROM media LIMIT 10;
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+| id | user_id | filename  | size    | metadata | media_type_id | created_at          | updated_at          |
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+|  1 |       1 | quia      |    7265 | NULL     |             1 | 2009-06-25 02:04:24 | 2005-03-06 03:35:32 |
+|  2 |       2 | illum     |    9212 | NULL     |             2 | 2000-07-13 02:51:11 | 1987-07-30 19:53:22 |
+|  3 |       3 | quo       |      20 | NULL     |             3 | 2008-09-14 09:53:07 | 1984-02-24 20:01:17 |
+|  4 |       4 | molestias |       0 | NULL     |             4 | 1972-11-18 22:05:33 | 1992-03-20 06:11:36 |
+|  5 |       5 | quo       | 8917424 | NULL     |             5 | 1982-11-01 11:33:17 | 2019-07-11 07:34:03 |
+|  6 |       6 | impedit   |       4 | NULL     |             6 | 1994-09-04 20:20:19 | 2004-12-01 17:02:44 |
+|  7 |       7 | repellat  |       1 | NULL     |             7 | 2005-11-20 03:08:22 | 1979-04-12 23:15:11 |
+|  8 |       8 | nemo      |      76 | NULL     |             8 | 1974-10-26 18:10:15 | 1992-10-12 21:45:01 |
+|  9 |       9 | explicabo |       0 | NULL     |             9 | 1998-10-02 08:03:13 | 2016-05-04 14:50:11 |
+| 10 |      10 | nihil     |       1 | NULL     |            10 | 1985-04-12 21:49:53 | 2000-07-01 04:49:46 |
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+10 rows in set (0.09 sec)
+
+mysql> SELECT * FROM media_types;
++-----+----------------+---------------------+---------------------+
+| id  | name           | created_at          | updated_at          |
++-----+----------------+---------------------+---------------------+
+|   1 | in             | 2000-06-06 06:29:34 | 2014-05-25 19:30:53 |
+|   2 | est            | 2010-03-07 18:00:18 | 2014-01-17 21:59:35 |
+|   3 | incidunt       | 2015-12-29 17:24:27 | 2015-08-28 08:16:02 |
+|   4 | aut            | 1985-03-04 12:50:37 | 1987-06-06 05:45:12 |
+|   5 | officiis       | 2014-08-19 22:48:39 | 2000-02-26 07:47:35 |
+|   6 | necessitatibus | 1977-12-19 18:24:59 | 1989-05-10 22:46:21 |
+|   7 | voluptate      | 1980-04-13 01:39:07 | 2006-09-10 22:42:09 |
+|   8 | sit            | 1992-03-19 05:36:23 | 1986-01-06 23:50:43 |
+|   9 | aliquid        | 1999-01-11 02:53:03 | 2014-05-10 20:27:28 |
+|  10 | possimus       | 2005-10-05 19:37:51 | 1972-12-07 04:37:27 |
+|  11 | rerum          | 2017-05-01 10:28:49 | 1991-10-03 00:43:16 |
+|  12 | quas           | 2003-04-22 02:21:20 | 2018-07-28 06:04:45 |
+|  13 | tenetur        | 1974-08-02 11:11:17 | 1995-07-01 01:11:56 |
+|  14 | et             | 1978-02-05 08:06:08 | 1976-09-08 17:00:38 |
+|  15 | voluptas       | 1983-09-30 08:58:54 | 2011-09-21 12:25:16 |
+|  16 | magnam         | 1975-07-26 14:25:48 | 1994-10-17 20:20:19 |
+|  17 | magni          | 2004-11-26 16:47:00 | 1978-12-07 11:46:04 |
+|  18 | dolores        | 2019-02-20 12:10:06 | 2008-01-30 04:59:23 |
+|  19 | ullam          | 2005-08-29 06:53:47 | 1999-03-31 22:12:24 |
+|  20 | laborum        | 2004-09-11 12:46:43 | 1982-10-30 02:39:33 |
+|  21 | praesentium    | 2014-12-03 06:15:08 | 2012-04-27 10:32:58 |
+|  22 | nisi           | 2010-10-08 16:10:55 | 2019-08-28 21:33:02 |
+|  23 | qui            | 1995-05-29 23:17:42 | 2016-02-26 04:38:48 |
+|  24 | quasi          | 1976-04-17 19:30:40 | 2001-02-27 16:53:30 |
+|  25 | accusamus      | 1972-01-10 10:27:21 | 2002-11-24 07:27:57 |
+|  26 | sed            | 2010-12-01 20:43:55 | 2011-01-29 23:48:52 |
+|  27 | veniam         | 1989-08-09 06:39:57 | 2011-09-20 00:59:32 |
+|  28 | voluptatem     | 2013-02-10 14:19:36 | 2000-11-13 13:34:19 |
+|  29 | nihil          | 2003-01-19 20:59:16 | 1996-05-30 08:28:09 |
+|  30 | ut             | 1989-01-19 04:27:59 | 2013-08-31 09:35:49 |
+|  31 | quia           | 1993-06-06 11:23:06 | 1995-04-01 19:38:26 |
+|  32 | accusantium    | 1978-02-19 02:14:45 | 2019-09-28 22:09:21 |
+|  33 | placeat        | 2004-02-03 13:32:02 | 1977-04-21 00:31:56 |
+|  34 | delectus       | 1987-03-19 17:44:24 | 1981-02-26 19:02:36 |
+|  35 | at             | 1973-11-08 01:19:06 | 1996-09-15 02:45:25 |
+|  36 | iure           | 1996-07-08 21:37:43 | 1989-01-02 00:40:57 |
+|  37 | similique      | 2015-10-01 00:25:10 | 1992-07-24 23:36:46 |
+|  38 | omnis          | 1971-01-11 06:14:14 | 2002-05-15 11:54:34 |
+|  39 | commodi        | 1978-07-07 09:25:52 | 1993-10-15 02:48:44 |
+|  40 | dolore         | 1975-09-13 11:39:16 | 1992-11-15 20:55:10 |
+|  41 | laudantium     | 1985-07-19 11:56:42 | 1970-04-25 18:12:11 |
+|  42 | dolorem        | 1971-11-02 03:51:49 | 1982-09-11 14:33:36 |
+|  43 | blanditiis     | 1975-11-09 08:38:02 | 1986-12-26 04:51:55 |
+|  44 | molestias      | 2018-08-27 07:08:11 | 1982-09-28 19:13:19 |
+|  45 | sunt           | 2015-09-05 21:13:08 | 2002-12-30 21:21:06 |
+|  46 | odio           | 2014-10-26 10:04:38 | 2016-07-23 10:14:14 |
+|  47 | ea             | 1989-07-15 02:07:12 | 1997-09-11 20:01:26 |
+|  48 | inventore      | 2008-12-29 19:12:26 | 1982-04-18 19:03:35 |
+|  49 | vel            | 1989-07-19 01:53:27 | 2000-04-24 14:14:30 |
+|  50 | laboriosam     | 2003-08-05 17:41:22 | 1993-05-03 01:46:35 |
+|  51 | quae           | 1973-08-09 10:26:55 | 1975-12-01 23:29:12 |
+|  52 | minus          | 1992-05-31 12:19:11 | 1975-08-14 18:13:39 |
+|  53 | a              | 1973-07-12 10:03:38 | 1974-10-17 07:58:49 |
+|  54 | numquam        | 2004-04-13 14:04:49 | 2009-07-06 13:42:40 |
+|  55 | culpa          | 1975-10-03 11:55:21 | 2017-07-05 18:36:20 |
+|  56 | rem            | 1996-05-21 12:34:07 | 2005-12-12 16:59:32 |
+|  57 | consequuntur   | 1975-10-20 07:35:04 | 2008-05-04 05:40:48 |
+|  58 | maiores        | 2011-10-01 03:09:46 | 2019-04-08 08:49:11 |
+|  59 | non            | 1987-11-01 17:25:29 | 1988-06-13 05:16:44 |
+|  60 | nam            | 1984-11-08 20:34:17 | 2020-01-22 21:01:11 |
+|  61 | distinctio     | 1980-07-20 06:34:06 | 2005-04-30 08:06:29 |
+|  62 | ducimus        | 2004-07-02 01:49:43 | 1994-10-14 13:33:11 |
+|  63 | sint           | 1994-08-26 12:24:42 | 1993-12-13 19:57:45 |
+|  64 | facere         | 1979-03-26 22:12:56 | 1997-05-26 08:12:08 |
+|  65 | alias          | 1976-06-20 09:45:08 | 1973-10-04 14:33:19 |
+|  66 | autem          | 2009-09-23 01:19:51 | 1978-12-06 04:37:35 |
+|  67 | recusandae     | 2015-05-20 13:10:32 | 1972-06-04 03:05:49 |
+|  68 | deleniti       | 1979-09-07 10:25:08 | 2005-03-16 08:15:54 |
+|  69 | illum          | 1986-07-04 13:27:34 | 1980-02-26 11:09:09 |
+|  70 | provident      | 2008-08-03 09:25:31 | 2012-03-11 19:16:01 |
+|  71 | vitae          | 1975-05-24 01:35:13 | 2000-07-30 04:50:05 |
+|  72 | porro          | 1985-12-05 15:12:42 | 2016-06-17 05:29:07 |
+|  73 | ipsum          | 2010-01-17 12:30:19 | 2000-10-26 22:32:58 |
+|  74 | pariatur       | 1974-09-11 06:04:21 | 1977-05-30 23:44:57 |
+|  75 | ratione        | 1991-05-27 05:39:57 | 1996-01-05 01:08:55 |
+|  76 | esse           | 2017-12-03 00:07:05 | 1992-04-08 04:54:20 |
+|  77 | officia        | 2015-01-08 20:53:12 | 2012-06-07 22:03:54 |
+|  78 | beatae         | 1974-07-05 03:13:30 | 1998-03-01 18:11:17 |
+|  79 | excepturi      | 2007-03-17 07:10:28 | 1978-03-29 04:39:56 |
+|  80 | quos           | 1986-04-03 16:06:35 | 2000-08-26 21:23:34 |
+|  81 | cumque         | 2011-04-20 10:46:37 | 1986-12-14 07:48:26 |
+|  82 | quo            | 2000-10-09 01:56:34 | 1986-06-29 23:39:55 |
+|  83 | molestiae      | 2018-09-08 19:31:45 | 1974-04-26 14:27:36 |
+|  84 | perspiciatis   | 1983-05-16 02:49:57 | 2008-01-30 21:50:19 |
+|  85 | soluta         | 1986-02-01 16:32:38 | 1994-06-05 23:16:39 |
+|  86 | enim           | 1976-04-24 13:20:26 | 1972-10-09 00:06:35 |
+|  87 | quidem         | 1988-10-27 20:05:30 | 1996-02-14 06:41:10 |
+|  88 | maxime         | 2007-07-18 08:58:22 | 1976-10-09 08:34:44 |
+|  89 | deserunt       | 1997-09-27 15:03:03 | 2015-02-10 05:39:11 |
+|  90 | occaecati      | 1994-07-30 02:01:04 | 1976-04-21 12:37:48 |
+|  91 | eveniet        | 1980-03-31 00:15:27 | 2000-03-19 01:38:12 |
+|  92 | eligendi       | 2000-03-15 20:58:58 | 1998-03-28 07:36:39 |
+|  93 | consequatur    | 1975-11-28 10:46:30 | 1997-01-26 16:48:51 |
+|  94 | unde           | 1986-11-01 20:13:16 | 2014-12-30 21:44:08 |
+|  95 | doloribus      | 2019-12-06 23:15:59 | 2016-08-19 02:24:09 |
+|  96 | vero           | 1998-02-11 18:06:58 | 1970-02-21 13:04:14 |
+|  97 | eaque          | 2006-03-11 14:00:51 | 1975-05-21 07:39:13 |
+|  98 | libero         | 1979-02-20 21:20:29 | 1990-09-21 04:53:21 |
+|  99 | dolor          | 1988-05-21 18:11:40 | 2015-12-25 09:32:19 |
+| 100 | id             | 1972-02-06 11:00:10 | 1978-09-16 18:08:06 |
++-----+----------------+---------------------+---------------------+
+100 rows in set (0.24 sec)
+
+mysql> DELETE FROM media_types;
+Query OK, 100 rows affected (0.02 sec)
+
+mysql> INSERT INTO media_types (name) VALUES
+  ('photo'),
+  ('video'),
+  ('audio')
+;
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> TRUNCATE media_types;
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> SELECT * FROM media LIMIT 10;
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+| id | user_id | filename  | size    | metadata | media_type_id | created_at          | updated_at          |
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+|  1 |       1 | quia      |    7265 | NULL     |             1 | 2009-06-25 02:04:24 | 2005-03-06 03:35:32 |
+|  2 |       2 | illum     |    9212 | NULL     |             2 | 2000-07-13 02:51:11 | 1987-07-30 19:53:22 |
+|  3 |       3 | quo       |      20 | NULL     |             3 | 2008-09-14 09:53:07 | 1984-02-24 20:01:17 |
+|  4 |       4 | molestias |       0 | NULL     |             4 | 1972-11-18 22:05:33 | 1992-03-20 06:11:36 |
+|  5 |       5 | quo       | 8917424 | NULL     |             5 | 1982-11-01 11:33:17 | 2019-07-11 07:34:03 |
+|  6 |       6 | impedit   |       4 | NULL     |             6 | 1994-09-04 20:20:19 | 2004-12-01 17:02:44 |
+|  7 |       7 | repellat  |       1 | NULL     |             7 | 2005-11-20 03:08:22 | 1979-04-12 23:15:11 |
+|  8 |       8 | nemo      |      76 | NULL     |             8 | 1974-10-26 18:10:15 | 1992-10-12 21:45:01 |
+|  9 |       9 | explicabo |       0 | NULL     |             9 | 1998-10-02 08:03:13 | 2016-05-04 14:50:11 |
+| 10 |      10 | nihil     |       1 | NULL     |            10 | 1985-04-12 21:49:53 | 2000-07-01 04:49:46 |
++----+---------+-----------+---------+----------+---------------+---------------------+---------------------+
+10 rows in set (0.08 sec)
+
+mysql> UPDATE media SET media_type_id = FLOOR(1 + RAND() * 3);
+UPDATE media SET user_id = FLOOR(1 + RAND() * 100);
+Query OK, 98 rows affected (0.01 sec)
+Rows matched: 100  Changed: 98  Warnings: 0
+
+Query OK, 97 rows affected (0.01 sec)
+Rows matched: 100  Changed: 97  Warnings: 0
+mysql> CREATE TEMPORARY TABLE extensions (name VARCHAR(10));
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO extensions VALUES ('jpeg'), ('avi'), ('mpeg'), ('png');
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM extensions;
++------+
+| name |
++------+
+| jpeg |
+| avi  |
+| mpeg |
+| png  |
++------+
+4 rows in set (0.07 sec)
+
+mysql> UPDATE media SET filename = CONCAT('https://dropbox/vk/',
+  filename,
+  '.',
+  (SELECT name FROM extensions ORDER BY RAND() LIMIT 1)
+);
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+
+mysql> UPDATE media SET size = FLOOR(10000 + (RAND() * 1000000)) WHERE size < 1000;
+Query OK, 41 rows affected (0.01 sec)
+Rows matched: 41  Changed: 41  Warnings: 0
+
+mysql> UPDATE media SET metadata = CONCAT('{"owner":"', 
+  (SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = user_id),
+  '"}'); 
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+mysql> ALTER TABLE media MODIFY COLUMN metadata JSON;
+Query OK, 100 rows affected (0.13 sec)
+Records: 100  Duplicates: 0  Warnings: 0
+
+mysql> DESC friendship;
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field        | Type         | Null | Key | Default           | Extra                                         |
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| user_id      | int unsigned | NO   | PRI | NULL              |                                               |
+| friend_id    | int unsigned | NO   | PRI | NULL              |                                               |
+| status_id    | int unsigned | NO   |     | NULL              |                                               |
+| requested_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| confirmed_at | datetime     | YES  |     | NULL              |                                               |
+| created_at   | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at   | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++--------------+--------------+------+-----+-------------------+-----------------------------------------------+
+7 rows in set (0.08 sec)
+
+mysql> SELECT * FROM friendship LIMIT 10;
++---------+-----------+-----------+---------------------+---------------------+---------------------+---------------------+
+| user_id | friend_id | status_id | requested_at        | confirmed_at        | created_at          | updated_at          |
++---------+-----------+-----------+---------------------+---------------------+---------------------+---------------------+
+|       1 |         1 |         1 | 2015-03-17 19:01:33 | 2017-05-01 17:23:59 | 2000-03-07 05:07:41 | 1981-07-20 02:30:27 |
+|       2 |         2 |         2 | 2005-01-03 08:09:36 | 2010-05-20 10:34:15 | 1987-05-30 14:55:48 | 2008-01-23 21:03:57 |
+|       3 |         3 |         3 | 2010-03-04 21:07:48 | 1999-02-18 11:04:17 | 1993-03-01 13:28:42 | 2001-12-19 13:25:12 |
+|       4 |         4 |         4 | 1974-03-06 04:49:52 | 2002-07-07 15:40:36 | 2016-10-14 13:29:12 | 1970-01-24 01:39:13 |
+|       5 |         5 |         5 | 1973-07-26 17:10:09 | 1989-06-08 05:01:04 | 1993-11-18 08:06:03 | 1996-09-23 09:09:13 |
+|       6 |         6 |         6 | 1992-08-17 03:07:00 | 1985-03-15 08:41:31 | 1981-10-10 20:13:16 | 1970-02-18 09:21:02 |
+|       7 |         7 |         7 | 2006-01-10 08:55:45 | 2011-08-28 17:33:51 | 1993-09-20 13:48:51 | 1978-06-22 09:17:11 |
+|       8 |         8 |         8 | 2011-12-12 18:05:25 | 2012-04-07 08:08:49 | 2008-01-29 13:33:37 | 2008-10-11 07:18:41 |
+|       9 |         9 |         9 | 1971-09-19 01:58:32 | 2003-09-15 18:23:35 | 1972-07-27 23:31:40 | 2004-02-13 08:33:53 |
+|      10 |        10 |        10 | 1999-03-30 22:46:02 | 2020-03-18 08:10:46 | 2010-05-18 04:02:28 | 2015-12-20 21:25:12 |
++---------+-----------+-----------+---------------------+---------------------+---------------------+---------------------+
+10 rows in set (0.08 sec)
+
+mysql> UPDATE friendship SET 
+  user_id = FLOOR(1 + RAND() * 100),
+  friend_id = FLOOR(1 + RAND() * 100);
+Query OK, 100 rows affected (0.02 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+mysql> UPDATE friendship SET friend_id = friend_id + 1 WHERE user_id = friend_id;
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+mysql> SELECT * FROM friendship_statuses;
++----+------------+---------------------+---------------------+
+| id | name       | created_at          | updated_at          |
++----+------------+---------------------+---------------------+
+|  1 | nam        | 2000-02-18 17:40:12 | 2009-04-29 12:48:15 |
+|  2 | nihil      | 2002-03-24 07:12:57 | 1977-11-02 18:29:17 |
+|  3 | odit       | 2005-12-22 15:39:58 | 1971-06-14 10:19:25 |
+|  4 | labore     | 1976-12-10 02:28:16 | 2012-04-12 17:01:01 |
+|  5 | voluptatum | 1981-01-06 13:02:35 | 2009-06-28 10:28:20 |
++----+------------+---------------------+---------------------+
+5 rows in set (0.07 sec)
+
+mysql> TRUNCATE friendship_statuses;
+Query OK, 0 rows affected (0.11 sec)
+mysql> INSERT INTO friendship_statuses (name) VALUES
+  ('Requested'),
+  ('Confirmed'),
+  ('Rejected');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+mysql> UPDATE friendship SET status_id = FLOOR(1 + RAND() * 3); 
+Query OK, 99 rows affected (0.02 sec)
+Rows matched: 100  Changed: 99  Warnings: 0
+
+mysql> DESC communities;
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field      | Type         | Null | Key | Default           | Extra                                         |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| id         | int unsigned | NO   | PRI | NULL              | auto_increment                                |
+| name       | varchar(150) | NO   | UNI | NULL              |                                               |
+| created_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++------------+--------------+------+-----+-------------------+-----------------------------------------------+
+4 rows in set (0.08 sec)
+
+mysql> SELECT * FROM communities;
++-----+----------+---------------------+---------------------+
+| id  | name     | created_at          | updated_at          |
++-----+----------+---------------------+---------------------+
+| 101 | and Sons | 1973-12-19 02:56:16 | 1983-07-15 17:18:06 |
+| 102 | Inc      | 1977-02-01 01:53:57 | 1997-10-27 02:23:29 |
+| 103 | LLC      | 1984-04-17 08:45:29 | 1984-05-01 10:46:22 |
+| 105 | PLC      | 1972-06-02 09:30:37 | 1985-08-31 02:57:18 |
+| 108 | Group    | 1974-07-11 05:25:52 | 1997-07-25 10:04:29 |
+| 112 | Ltd      | 2015-06-14 11:31:41 | 1972-01-02 03:56:28 |
++-----+----------+---------------------+---------------------+
+6 rows in set (0.08 sec)
+
+mysql> CREATE TEMPORARY TABLE communities_temp (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100));
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO communities_temp (id, name) SELECT id, name FROM communities;
+Query OK, 6 rows affected (0.00 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM communities_temp;
++-----+----------+
+| id  | name     |
++-----+----------+
+| 101 | and Sons |
+| 102 | Inc      |
+| 103 | LLC      |
+| 105 | PLC      |
+| 108 | Group    |
+| 112 | Ltd      |
++-----+----------+
+6 rows in set (0.07 sec)
+
+mysql> TRUNCATE communities;
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> INSERT INTO communities SELECT id, name, NOW(), NOW() FROM communities_temp;
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM communities;
++-----+----------+---------------------+---------------------+
+| id  | name     | created_at          | updated_at          |
++-----+----------+---------------------+---------------------+
+| 101 | and Sons | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
+| 102 | Inc      | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
+| 103 | LLC      | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
+| 105 | PLC      | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
+| 108 | Group    | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
+| 112 | Ltd      | 2020-06-26 10:59:31 | 2020-06-26 10:59:31 |
++-----+----------+---------------------+---------------------+
+6 rows in set (0.06 sec)
+
+mysql> UPDATE communities_users SET community_id = FLOOR(1 + RAND() * 6);
+Query OK, 100 rows affected (0.01 sec)
+Rows matched: 100  Changed: 100  Warnings: 0
+mysql> SELECT * FROM communities_users;
++--------------+---------+---------------------+
+| community_id | user_id | created_at          |
++--------------+---------+---------------------+
+|            1 |      12 | 2010-09-13 22:01:20 |
+|            1 |      21 | 1975-04-06 15:27:10 |
+|            1 |      24 | 2006-03-28 11:37:32 |
+|            1 |      33 | 2016-10-11 15:09:23 |
+|            1 |      38 | 1977-04-11 22:10:12 |
+|            1 |      48 | 1989-05-11 04:37:42 |
+|            1 |      50 | 1977-05-12 15:09:30 |
+|            1 |      60 | 2002-05-19 10:22:10 |
+|            1 |      61 | 1993-10-13 00:31:39 |
+|            1 |      62 | 2010-09-06 03:18:44 |
+|            1 |      64 | 1990-01-19 00:46:57 |
+|            1 |      67 | 1971-06-08 18:53:13 |
+|            1 |      70 | 2004-06-18 00:26:06 |
+|            1 |      86 | 2001-01-21 23:19:23 |
+|            1 |      92 | 1976-06-28 21:27:12 |
+|            1 |      94 | 1996-10-06 19:17:32 |
+|            1 |      95 | 1987-11-17 00:39:45 |
+|            2 |       2 | 2018-06-16 11:32:33 |
+|            2 |       3 | 2007-05-14 06:47:45 |
+|            2 |       8 | 1972-01-31 04:50:49 |
+|            2 |      13 | 2010-11-15 21:56:38 |
+|            2 |      15 | 2003-02-06 09:05:43 |
+|            2 |      18 | 1987-06-10 23:01:06 |
+|            2 |      19 | 1999-12-10 05:35:41 |
+|            2 |      23 | 2001-10-29 04:57:36 |
+|            2 |      34 | 2015-06-12 15:58:47 |
+|            2 |      45 | 1986-05-14 12:50:24 |
+|            2 |      55 | 2003-04-07 08:44:35 |
+|            2 |      63 | 1974-08-20 13:48:17 |
+|            2 |      74 | 1991-06-11 06:24:46 |
+|            2 |      76 | 2016-06-11 16:00:40 |
+|            2 |      88 | 2005-05-21 10:24:16 |
+|            2 |      89 | 2017-08-04 01:32:55 |
+|            2 |      98 | 2005-02-16 21:27:24 |
+|            3 |       6 | 1994-12-23 06:51:05 |
+|            3 |       7 | 1973-06-25 01:57:44 |
+|            3 |       9 | 2000-12-25 18:53:49 |
+|            3 |      10 | 1989-10-02 15:08:04 |
+|            3 |      14 | 2009-04-16 16:15:19 |
+|            3 |      31 | 2006-11-25 01:50:57 |
+|            3 |      39 | 2009-06-14 05:40:40 |
+|            3 |      43 | 2016-03-24 12:31:11 |
+|            3 |      46 | 2009-09-12 15:09:36 |
+|            3 |      56 | 1991-12-02 15:23:38 |
+|            3 |      66 | 1992-01-04 20:22:37 |
+|            3 |      68 | 2011-11-08 11:57:17 |
+|            3 |      71 | 1996-06-16 05:43:11 |
+|            3 |      78 | 1987-08-17 08:14:04 |
+|            3 |      79 | 1990-01-06 11:26:59 |
+|            3 |      80 | 2007-03-07 13:41:27 |
+|            3 |      81 | 1994-11-04 19:17:27 |
+|            3 |      87 | 1985-08-27 08:31:22 |
+|            3 |      93 | 1997-11-10 05:21:18 |
+|            4 |       5 | 2006-03-08 05:25:01 |
+|            4 |      17 | 2009-07-24 18:50:07 |
+|            4 |      20 | 2005-01-10 00:14:55 |
+|            4 |      22 | 2001-05-02 22:13:15 |
+|            4 |      25 | 2003-07-13 14:59:37 |
+|            4 |      26 | 1991-09-14 01:23:42 |
+|            4 |      30 | 2014-06-21 07:18:36 |
+|            4 |      42 | 1974-03-02 15:29:21 |
+|            4 |      49 | 1987-06-10 08:49:58 |
+|            4 |      54 | 2001-06-30 04:02:39 |
+|            4 |      69 | 1971-03-22 13:52:32 |
+|            4 |      73 | 1974-05-11 00:39:56 |
+|            4 |      96 | 1974-05-16 14:02:41 |
+|            4 |      97 | 1970-10-27 07:24:11 |
+|            5 |       1 | 1999-04-21 03:21:37 |
+|            5 |       4 | 1970-09-10 01:22:35 |
+|            5 |      16 | 1999-12-19 09:17:12 |
+|            5 |      28 | 2017-07-29 17:49:07 |
+|            5 |      29 | 2007-07-28 21:13:31 |
+|            5 |      35 | 1975-07-06 13:19:12 |
+|            5 |      52 | 1984-08-24 18:25:48 |
+|            5 |      57 | 1995-05-31 03:11:06 |
+|            5 |      58 | 1976-09-19 12:29:22 |
+|            5 |      72 | 1980-11-07 09:35:00 |
+|            5 |      83 | 1977-01-03 14:48:19 |
+|            5 |      84 | 1981-12-20 13:22:10 |
+|            5 |      85 | 2007-09-17 20:10:04 |
+|            5 |      90 | 2008-10-28 05:56:01 |
+|            5 |      99 | 1971-09-29 03:50:56 |
+|            6 |      11 | 2013-01-03 05:22:07 |
+|            6 |      27 | 1990-04-03 00:29:25 |
+|            6 |      32 | 1972-08-13 05:33:46 |
+|            6 |      36 | 2018-09-25 19:20:21 |
+|            6 |      37 | 1978-03-25 01:21:00 |
+|            6 |      40 | 1975-03-22 19:39:11 |
+|            6 |      41 | 2001-03-02 08:54:12 |
+|            6 |      44 | 2013-11-04 23:42:17 |
+|            6 |      47 | 2009-01-28 16:47:28 |
+|            6 |      51 | 2005-07-31 04:02:38 |
+|            6 |      53 | 1979-04-17 18:52:10 |
+|            6 |      59 | 1979-01-14 17:13:26 |
+|            6 |      65 | 1990-12-17 01:45:11 |
+|            6 |      75 | 2019-02-17 20:01:33 |
+|            6 |      77 | 2008-11-24 18:26:43 |
+|            6 |      82 | 1991-02-07 10:28:30 |
+|            6 |      91 | 2013-08-19 21:41:38 |
+|            6 |     100 | 1985-03-30 05:58:38 |
++--------------+---------+---------------------+
+100 rows in set (0.22 sec)
+
+mysql> UPDATE communities_users SET community_id = FLOOR(1 + RAND() * 6);
+Query OK, 83 rows affected (0.01 sec)
+Rows matched: 100  Changed: 83  Warnings: 0
+mysql>
