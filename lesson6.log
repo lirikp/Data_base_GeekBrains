@@ -1,0 +1,128 @@
+1. Создать все необходимые внешние ключи и диаграмму отношений.
+
+ALTER TABLE `vk`.`communities_users`
+ADD FOREIGN KEY (`user_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE `vk`.`communities_users`
+ADD FOREIGN KEY (`community_id`) REFERENCES `vk`.`communities` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE `vk`.`friendship`
+ADD FOREIGN KEY (`user_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`friend_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`status_id`) REFERENCES `vk`.`friendship_statuses` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE `vk`.`likes`
+ADD FOREIGN KEY (`user_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`target_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`target_type_id`) REFERENCES `vk`.`target_types` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE `vk`.`media`
+ADD FOREIGN KEY (`user_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`media_type_id`) REFERENCES `vk`.`media_types` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+ALTER TABLE `vk`.`posts`
+ADD FOREIGN KEY (`user_id`) REFERENCES `vk`.`users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+ADD FOREIGN KEY (`community_id`) REFERENCES `vk`.`communities` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+2. Создать и заполнить таблицы лайков и постов.
+
+Создал, заполнил.
+
+3. Определить кто больше поставил лайков (всего) - мужчины или женщины?
+SELECT
+	`profiles`.gender,
+	COUNT( 1 )
+FROM
+	`profiles`
+	JOIN likes ON `profiles`.user_id = likes.user_id
+GROUP BY
+	`profiles`.gender
+
+4. Подсчитать общее количество лайков десяти самым молодым пользователям (сколько лайков получили 10 самых молодых пользователей).
+SELECT
+	COUNT( 1 )
+FROM
+	(
+	SELECT
+		`profiles`.user_id,
+		DATE_FORMAT( now(), '%Y' ) - DATE_FORMAT( `profiles`.birthday, '%Y' ) AS 'age'
+	FROM
+		`profiles`
+	ORDER BY
+		age
+		LIMIT 10
+	) AS prof_ids
+	JOIN likes ON prof_ids.user_id = likes.user_id
+
+5. Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети
+
+Время последнего поста created_at or updated_at старше чем 4 недели
+или
+Время последнего сообщения created_at or updated_at старше чем 4 недели
+или
+Выкладка медии created_at or updated_at старше чем 4 недели
+
+SELECT
+	*
+FROM
+	(
+		(
+		SELECT
+			posts.user_id,
+			users.first_name,
+			users.last_name,
+			TIMESTAMPDIFF(
+				WEEK,
+			IF
+				( posts.created_at <= posts.updated_at, posts.updated_at, posts.created_at ),
+			NOW()) AS 'diff_w'
+		FROM
+			posts
+			JOIN users ON users.id = posts.user_id
+		HAVING
+			diff_w > 4
+		ORDER BY
+			diff_w DESC
+			LIMIT 10
+		) UNION ALL
+		(
+		SELECT
+			messages.from_user_id AS 'user_id',
+			users.first_name,
+			users.last_name,
+			TIMESTAMPDIFF(
+				WEEK,
+			IF
+				( messages.created_at <= messages.updated_at, messages.updated_at, messages.created_at ),
+			NOW()) AS 'diff_w'
+		FROM
+			messages
+			JOIN users ON users.id = messages.from_user_id
+		HAVING
+			diff_w > 4
+		ORDER BY
+			diff_w DESC
+			LIMIT 10
+		) UNION ALL
+		(
+		SELECT
+			media.user_id,
+			users.first_name,
+			users.last_name,
+			TIMESTAMPDIFF(
+				WEEK,
+			IF
+				( media.created_at <= media.updated_at, media.updated_at, media.created_at ),
+			NOW()) AS 'diff_w'
+		FROM
+			media
+			JOIN users ON users.id = media.user_id
+		HAVING
+			diff_w > 4
+		ORDER BY
+			diff_w DESC
+			LIMIT 10
+		)) AS t
+ORDER BY
+	diff_w DESC
+	LIMIT 10
